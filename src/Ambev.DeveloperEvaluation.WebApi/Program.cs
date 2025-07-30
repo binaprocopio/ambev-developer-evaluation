@@ -8,6 +8,9 @@ using Ambev.DeveloperEvaluation.ORM;
 using Ambev.DeveloperEvaluation.WebApi.Middleware;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Rebus.Bus;
+using Rebus.Config;
+using Rebus.Transport.InMem;
 using Serilog;
 
 namespace Ambev.DeveloperEvaluation.WebApi;
@@ -49,10 +52,18 @@ public class Program
                     typeof(Program).Assembly
                 );
             });
+            builder.Services.AddRebus(configure => configure
+            .Transport(t => t.UseInMemoryTransport(new InMemNetwork(), "sales-queue"))); 
 
             builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
             var app = builder.Build();
+
+            app.Lifetime.ApplicationStopped.Register(() =>
+            {
+                app.Services.GetRequiredService<IBus>().Dispose();
+            });
+
             app.UseMiddleware<ValidationExceptionMiddleware>();
 
             if (app.Environment.IsDevelopment())
