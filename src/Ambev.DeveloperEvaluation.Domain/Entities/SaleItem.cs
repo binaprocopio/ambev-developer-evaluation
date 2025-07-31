@@ -1,4 +1,4 @@
-﻿namespace Ambev.DeveloperEvaluation.Domain.ValueObjects
+﻿namespace Ambev.DeveloperEvaluation.Domain.Entities
 {
     public class SaleItem
     {
@@ -9,7 +9,7 @@
         public decimal UnitPrice { get; private set; }
         public decimal Discount { get; private set; }
 
-        public decimal Total => (Quantity * UnitPrice) - Discount;
+        public decimal Total => Quantity * UnitPrice - Discount;
 
         protected SaleItem() { }
 

@@ -1,4 +1,4 @@
-﻿using Ambev.DeveloperEvaluation.Domain.ValueObjects;
+﻿using Ambev.DeveloperEvaluation.Domain.Entities;
 using FluentAssertions;
 using Xunit;
 

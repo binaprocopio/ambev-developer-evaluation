@@ -20,16 +20,6 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
             _context = context;
         }
 
-        public Task CancelSaleAsync(Guid id, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task CancelSaleItemAsync(Guid id, Guid saleItemId, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
         /// <summary>
         /// Creates a new sale in the database
         /// </summary>
@@ -53,9 +43,15 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
             => await _context.Sales.Include(s => s.Items)
                 .FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
 
-        public Task UpdateAsync(Sale sale, CancellationToken cancellationToken = default)
+        /// <summary>
+        /// Updates an existing sale in the database
+        /// </summary>
+        /// <param name="sale">The sale to cancel</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        public async Task UpdateAsync(Sale sale, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            _context.Sales.Update(sale);
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }
