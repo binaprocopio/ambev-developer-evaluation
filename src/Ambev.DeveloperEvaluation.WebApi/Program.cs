@@ -65,6 +65,7 @@ public class Program
             });
 
             app.UseMiddleware<ValidationExceptionMiddleware>();
+            app.UseMiddleware<KeyNotFoundExceptionMiddleware>();
 
             if (app.Environment.IsDevelopment())
             {

@@ -2,22 +2,27 @@
 using Ambev.DeveloperEvaluation.Domain.Events;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Rebus.Bus;
 
-namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
+namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale;
+
+public class CreateSaleHandler : IRequestHandler<CreateSaleCommand, CreateSaleResult>
 {
-    public class CreateSaleHandler : IRequestHandler<CreateSaleCommand, CreateSaleResult>
+    private readonly ISaleRepository _saleRepository;
+    private readonly IBus _bus;
+    private ILogger<CreateSaleHandler> _logger;
+
+    public CreateSaleHandler(ISaleRepository saleRepository, IBus bus, ILogger<CreateSaleHandler> logger)
     {
-        private readonly ISaleRepository _saleRepository;
-        private readonly IBus _bus;
+        _saleRepository = saleRepository;
+        _bus = bus;
+        _logger = logger;
+    }
 
-        public CreateSaleHandler(ISaleRepository saleRepository, IBus bus)
-        {
-            _saleRepository = saleRepository;
-            _bus = bus;
-        }
-
-        public async Task<CreateSaleResult> Handle(CreateSaleCommand request, CancellationToken cancellationToken)
+    public async Task<CreateSaleResult> Handle(CreateSaleCommand request, CancellationToken cancellationToken)
+    {
+        try
         {
             var sale = new Sale(request.CustomerId, request.CustomerName, request.BranchId, request.BranchName);
 
@@ -35,11 +40,17 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
                 sale.CustomerName,
                 sale.SaleDate
             );
+            _logger.LogInformation("Publishing event of sale {0} created.", sale.Id);
 
             await _bus.Publish(saleCreatedEvent);
 
             return new CreateSaleResult(sale.Id);
+
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error create sale.");
+            throw new ApplicationException("Error create sale.", ex);
         }
     }
-
 }

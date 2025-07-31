@@ -50,8 +50,8 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>The sale if found, null otherwise</returns>
         public async Task<Sale?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
-            => await _context.Sales.FirstOrDefaultAsync(o => o.Id == id, cancellationToken);
-        
+            => await _context.Sales.Include(s => s.Items)
+                .FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
 
         public Task UpdateAsync(Sale sale, CancellationToken cancellationToken = default)
         {
