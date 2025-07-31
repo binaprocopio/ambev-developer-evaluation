@@ -10,18 +10,16 @@ namespace Ambev.DeveloperEvaluation.ORM.Mapping
         {
             builder.ToTable("Sales");
 
-            // Primary Key
             builder.HasKey(s => s.Id);
 
             builder.Property(s => s.Id)
                    .HasColumnType("uuid")
                    .HasDefaultValueSql("gen_random_uuid()");
 
-            // Auto-incremented SaleNumber
             builder.Property(s => s.SaleNumber)
                    .IsRequired()
                    .ValueGeneratedOnAdd()
-                   .UseIdentityColumn(); // For PostgreSQL or SQL Server
+                   .UseIdentityColumn();
 
             builder.Property(s => s.SaleDate)
                    .IsRequired();
@@ -43,10 +41,9 @@ namespace Ambev.DeveloperEvaluation.ORM.Mapping
             builder.Property(s => s.IsCanceled)
                    .IsRequired();
 
-            // Relationship: Sale has many SaleItems
             builder.HasMany(s => s.Items)
                    .WithOne()
-                   .HasForeignKey("SaleId") // shadow property
+                   .HasForeignKey("SaleId")
                    .OnDelete(DeleteBehavior.Cascade);
         }
     }

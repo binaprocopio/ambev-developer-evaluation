@@ -22,7 +22,7 @@ namespace Ambev.DeveloperEvaluation.ORM.Mapping
             builder.Property(i => i.UnitPrice).IsRequired().HasColumnType("numeric(18,2)");
             builder.Property(i => i.Discount).IsRequired().HasColumnType("numeric(18,2)");
 
-            builder.Property<Guid>("SaleId"); // shadow FK property
+            builder.Property<Guid>("SaleId");
         }
     }
 
